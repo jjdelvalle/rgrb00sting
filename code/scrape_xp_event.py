@@ -61,7 +61,7 @@ def scrape(url: str, timeout=20):
 
         # Sum page-level rewards that are XP
         page_reward_total = 0
-        page_wrapper = step_container.find("div", class_="page-reward-wrapper")
+        page_wrapper = step_container.parent.find("div", class_="page-reward-wrapper")
         if page_wrapper:
             for lab in page_wrapper.select(".reward-label span"):
                 txt = get_text(lab)
