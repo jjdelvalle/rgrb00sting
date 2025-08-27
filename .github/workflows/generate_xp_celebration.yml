@@ -25,7 +25,7 @@ jobs:
           pip install requests beautifulsoup4 jinja2
 
       - name: Run script
-        run: python3 code/scrape_xp.py --url "https://leekduck.com/events/xp-celebration-event-2025/" --out-dir ./
+        run: python3 code/scrape_xp_event.py --url "https://leekduck.com/events/xp-celebration-event-2025/" --out-dir ./
 
       # OPTIONAL: Commit and push the generated HTML file
       - name: Commit and push changes
