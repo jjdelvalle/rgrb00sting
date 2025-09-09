@@ -184,7 +184,7 @@ Last updated: {{ data.scraped_at }}</p>
   {% for t in [0, 0.25, 0.5, 0.75, 1] %}
     {% set y = mt + inner_h - t*inner_h %}
     <line x1="{{ ml - 4 }}" y1="{{ y }}" x2="{{ ml }}" y2="{{ y }}" class="axis" stroke="#555" stroke-width="1"/>
-    <text x="{{ ml - 8 }}" y="{{ y + 3 }}" font-size="10" text-anchor="end">{{ (t*max_total)|int | string }}</text>
+    <text x="{{ ml - 8 }}" y="{{ y + 3 }}" font-size="18" text-anchor="end">{{ (t*max_total)|int | string }}</text>
     <line x1="{{ ml }}" y1="{{ y }}" x2="{{ ml + inner_w }}" y2="{{ y }}" class="axis" stroke="#ddd" stroke-width="1"/>
   {% endfor %}
 
@@ -204,14 +204,23 @@ Last updated: {{ data.scraped_at }}</p>
     </circle>
   {% endfor %}
 
-  <!-- X-axis labels -->
+  <!-- X-axis ticks and labels -->
   {% for s in data.steps %}
-    <text x="{{ ml + (loop.index0)*step_dx }}" y="{{ mt + inner_h + 14 }}" font-size="10" text-anchor="middle">{{ loop.index }}</text>
+    <!-- <text x="{{ ml + (loop.index0)*step_dx }}" y="{{ mt + inner_h + 14 }}" font-size="12" text-anchor="middle">{{ loop.index }}</text> -->
+    {% set x = ml + loop.index0 * step_dx %}
+    {% if loop.index0 is divisibleby(2) %}
+    <!-- major tick -->
+        <line x1="{{ x }}" y1="{{ mt + inner_h }}" x2="{{ x }}" y2="{{ mt + inner_h + 4 }}" class="axis" stroke="#555" stroke-width="1"/>
+        <text x="{{ x }}" y="{{ mt + inner_h + 18 }}" font-size="16" text-anchor="middle" class="num-label">{{ loop.index }}</text>
+    {% else %}
+        <!-- optional: minor tick (shorter line), or omit entirely -->
+        <line x1="{{ x }}" y1="{{ mt + inner_h }}" x2="{{ x }}" y2="{{ mt + inner_h + 2 }}" class="axis" stroke="#555" stroke-width="1"/>
+    {% endif %}
   {% endfor %}
 
   <!-- Axis labels -->
-  <text x="{{ ml + inner_w/2 }}" y="{{ height - 6 }}" text-anchor="middle" font-size="11">Step</text>
-  <text x="12" y="{{ mt + inner_h/2 }}" text-anchor="middle" font-size="11" transform="rotate(-90 12 {{ mt + inner_h/2 }})">XP Total</text>
+  <text x="{{ ml + inner_w/2 }}" y="{{ height - 6 }}" text-anchor="middle" font-size="16">Step</text>
+  <text x="5" y="{{ mt + inner_h/2 }}" text-anchor="middle" font-size="11" transform="rotate(-90 12 {{ mt + inner_h/2 }})"></text>
 </svg>
 
 {% endif %}
