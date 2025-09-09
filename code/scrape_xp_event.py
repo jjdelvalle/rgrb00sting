@@ -163,7 +163,7 @@ Last updated: {{ data.scraped_at }}</p>
 {% set step_dx = 28 %}
 {% set inner_w = (step_dx * (n - 1)) if n > 1 else 0 %}
 {% set width = ml + inner_w + mr %}
-{% set height = mt + 220 + mb %}
+{% set height = mt + 540 + mb %}
 {% set inner_h = height - mt - mb %}
 {% set raw_max = (data.steps | map(attribute='step_total') | max) if n > 0 else 1 %}
 {% set max_total = raw_max if raw_max > 0 else 1 %}
