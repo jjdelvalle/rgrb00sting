@@ -141,6 +141,9 @@ HTML_TEMPLATE = """<!doctype html>
         font-size: 12px;
         color: #FFFFFF;
     }
+
+    .xp-chart { display: block; width: 100%; height: auto; max-width: 900px; margin: 0 auto; }
+    .xp-chart .axis, .xp-chart .line { vector-effect: non-scaling-stroke; }
 </style>
 </head>
 <body>
@@ -164,22 +167,29 @@ Last updated: {{ data.scraped_at }}</p>
 {% set inner_h = height - mt - mb %}
 {% set raw_max = (data.steps | map(attribute='step_total') | max) if n > 0 else 1 %}
 {% set max_total = raw_max if raw_max > 0 else 1 %}
-<section id="xp-chart"> <h2>XP per Step</h2> {% if n == 0 %} <p>No steps to display.</p> {% else %} <svg width="{{ width }}" height="{{ height }}" role="img" aria-labelledby="xpChartTitle xpChartDesc"> <title id="xpChartTitle">XP Totals by Step</title> <desc id="xpChartDesc">Line chart showing XP total on the Y axis and step number on the X axis</desc>
+<section id="xp-chart"> <h2>XP per Step</h2>
+{% if n == 0 %}
+    <p>No steps to display.</p> 
+{% else %}
+<!-- <svg width="{{ width }}" height="{{ height }}" role="img" aria-labelledby="xpChartTitle xpChartDesc"> -->
+<svg viewBox="0 0 {{ width }} {{ height }}" class="xp-chart" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="xpChartTitle xpChartDesc">
+  <title id="xpChartTitle">XP Totals by Step</title>
+  <desc id="xpChartDesc">Line chart showing XP total on the Y axis and step number on the X axis</desc>
 
   <!-- Axes -->
-  <line x1="{{ ml }}" y1="{{ mt }}" x2="{{ ml }}" y2="{{ mt + inner_h }}" stroke="#555" stroke-width="1"/>
-  <line x1="{{ ml }}" y1="{{ mt + inner_h }}" x2="{{ ml + inner_w }}" y2="{{ mt + inner_h }}" stroke="#555" stroke-width="1"/>
+  <line x1="{{ ml }}" y1="{{ mt }}" x2="{{ ml }}" y2="{{ mt + inner_h }}" class="axis" stroke="#555" stroke-width="1"/>
+  <line x1="{{ ml }}" y1="{{ mt + inner_h }}" x2="{{ ml + inner_w }}" y2="{{ mt + inner_h }}" class="axis" stroke="#555" stroke-width="1"/>
 
   <!-- Y-axis ticks, grid, and labels -->
   {% for t in [0, 0.25, 0.5, 0.75, 1] %}
     {% set y = mt + inner_h - t*inner_h %}
-    <line x1="{{ ml - 4 }}" y1="{{ y }}" x2="{{ ml }}" y2="{{ y }}" stroke="#555" stroke-width="1"/>
+    <line x1="{{ ml - 4 }}" y1="{{ y }}" x2="{{ ml }}" y2="{{ y }}" class="axis" stroke="#555" stroke-width="1"/>
     <text x="{{ ml - 8 }}" y="{{ y + 3 }}" font-size="10" text-anchor="end">{{ (t*max_total)|int | string }}</text>
-    <line x1="{{ ml }}" y1="{{ y }}" x2="{{ ml + inner_w }}" y2="{{ y }}" stroke="#ddd" stroke-width="1"/>
+    <line x1="{{ ml }}" y1="{{ y }}" x2="{{ ml + inner_w }}" y2="{{ y }}" class="axis" stroke="#ddd" stroke-width="1"/>
   {% endfor %}
 
   <!-- Line path (polyline) -->
-  <polyline fill="none" stroke="#2563eb" stroke-width="2" points="
+  <polyline class="line" fill="none" stroke="#2563eb" stroke-width="2" points="
     {% for s in data.steps %}
       {{ ml + (loop.index0)*step_dx }},{{ mt + inner_h - (s.step_total * inner_h / max_total) }}{% if not loop.last %} {% endif %}
     {% endfor %}
@@ -196,7 +206,7 @@ Last updated: {{ data.scraped_at }}</p>
 
   <!-- X-axis labels -->
   {% for s in data.steps %}
-    <text x="{{ ml + (loop.index0)*step_dx }}" y="{{ mt + inner_h + 14 }}" font-size="10" text-anchor="middle">#{{ loop.index }}</text>
+    <text x="{{ ml + (loop.index0)*step_dx }}" y="{{ mt + inner_h + 14 }}" font-size="10" text-anchor="middle">{{ loop.index }}</text>
   {% endfor %}
 
   <!-- Axis labels -->
